@@ -25,6 +25,7 @@
 | DATE OCC                    | object       | Fecha en que ocurrió el incidente.              |
 | TIME OCC                    | int64        | Hora en que ocurrió el incidente (formato 24h).|
 | AREA                        | int64        | Código del área donde ocurrió el incidente.     |
+| AREA Name                   | int64        | Nombre del área donde ocurrió el arresto.       |
 | Crm Cd                      | int64        | Código del crimen específico.                    |
 | Crm Cd Desc                 | object       | Descripción del crimen.                          |
 | Vict Age                    | int64        | Edad de la víctima.                             |
