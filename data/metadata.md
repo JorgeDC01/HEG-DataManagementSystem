@@ -70,15 +70,26 @@ El tipo de dato de la columna "genres" es un diccionario. Una película puede re
 - **Licencia:** MIT
 - **Enlace a la licencia:** [URL de la licencia](https://www.mit.edu/~amini/LICENSE.md)
 
-## Descripción de las variables del conjunto de datos de Reviews
+## Descripción de las variables del conjunto de datos de Movies (movies.csv)
 
 | Nombre de la Variable       | Tipo de Dato | Descripción                                                                                         |
 |-----------------------------|--------------|-----------------------------------------------------------------------------------------------------|
-| name                        | object       | Título de la película.                                                                              |
-| review                      | object       | Reseña acerca de la película.                                                                       |
+| id                          | str          | Identificador de la película.                                                                       |
+| name                        | str          | Título de la película.                                                                              |
+| genres                      | str          | Géneros asociados a la película.                                                                    |
+| review_url                  | str          | Enlace (URL) a reseña de la película.                                                               |
+
+## Descripción de las variables del conjunto de datos de Reviews (reviews.csv)
+
+| Nombre de la Variable       | Tipo de Dato | Descripción                                                                                         |
+|-----------------------------|--------------|-----------------------------------------------------------------------------------------------------|
+| id                          | str          | Identificador de la película.                                                                       |
+| name                        | str          | Título de la película.                                                                              |
+| review                      | str          | Reseña de la película.                                                                              |
 
 ## Proceso de recolección de las reviews
-El dataset de Kaggle contiene 17 archivos con formato ".csv", cada uno de ellos contiene un conjunto de películas de un género en concreto. 
+El dataset de Kaggle contiene 17 archivos con formato ".csv", cada uno de ellos contiene un conjunto de películas de un género en concreto.
+
 ![image](https://github.com/user-attachments/assets/9c97fca9-e10c-4f9c-9dd9-8b12d6de2fa3)
 
 Cada ".csv" almacena un conjunto de películas con diferentes atributos (name, year, movie_rating ... review_url). Este último atributo es un enlace a una página web en IMDB que contiene 25 reviews de la película correspondiente. La siguiente imagen corresponde a una página web de reviews:
