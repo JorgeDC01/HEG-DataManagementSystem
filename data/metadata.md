@@ -125,19 +125,90 @@ El propósito de almacenar las reseñas de películas junto con el nombre de la 
 
 # Datos Enlazados - Metadatos
 ## Fuente de los Datos
-- **Origen:** 
-- **URLs de origen:**
-  - 
+- **Origen:** Estructurado por los miembros del grupo con la herramienta [WebProtégé](https://webprotege.stanford.edu/).
   
 ## Fecha de Recogida
-- **Fecha:** 
+- **Fecha:** 03/11/2024
 
 ## Formato de los Datos
-- **Formato:**
+- **Formato:** Formato 'turtle' (.ttl)
   
 ## Licencia de Uso
-- **Licencia:** 
-- **Enlace a la licencia:** 
+- **Licencia:** Sin licencia.
 
 ## Descripción del conjunto de datos
+### Classes
+- `void:Dataset`: Representa los conjuntos de datos 'datasets'.
+- `ont:Database`: Representa la fuente de los datos. Puede incluir bases de datos relacionales (como PostgreSQL) o sistemas de búsqueda (como Elasticsearch).
+- `ont:Field`: Representa columnas o campos específicos en cada tabla o índice.
+- `ont:Index`: Clase índice, representa los índices que se crean en las bases de datos.
+- `ont:Table`: Representa cada tabla en una base de datos relacional.
+- `ont:Genre`: Representa el género de una película, como un string.
+- `ont:Review`: Representa la entidad Review del dataset no estructurado.
+- `ont:ProductionCompany`: Representa la productora de la película.
+- `ont:Franchise`: Representa la franquicia a la que pertenece una película.
+- `ont:Movie`: Representa la entidad Película del dataset estructurado.
+- `dcat:DataCatalog`: Descripción de los metadatos según la entidad que describa.
+
+### Data properties
+- `ont:count`: Cuantifica el número de tablas, índices creados en un dataset o el número de registros.
+- `ont:creationDate`: Fecha de creación de los metadatos.
+- `ont:databaseEngine`: Describe el tipo de base de datos: relacional, noSQL (documental, clave-valor, etc).
+- `ont:databaseSize`: Describe el tamaño en GB de la base de datos o de un dataset en concreto.
+- `ont:datatype`: Describe el tipo de dato que almacena un campo de una tabla o índice.
+- `ont:description`: Descripción del dataset, base de datos, campo, índice o tabla.
+- `ont:endpoint_db`: Punto de acceso de la base de datos.
+- `ont:isIndexed`: Describe si un campo está indexado. En tal caso, se pueden realizar consultas más rápidas.
+- `ont:isRequired`: Describe si un campo puede tomar valores nulos.
+- `ont:last_Update`: Última modificación del dataset, índice o tabla.
+- `ont:name`: Nombre del dataset, base de datos, campo, índice, tabla o catálogo de datos.
+- `ont:version_db`: Versión de la base de datos empleada.
+- `ont:vote_count`: Número de votos recibidos de la película en TMDB.
+- `ont:spoken_languages`: Idiomas hablados en la película.
+- `ont:budget`: Presupuesto de la película.
+- `ont:overview`: Resumen de la película.
+- `ont:review_text`: Texto de la reseña.
+- `ont:movieId`: ID de la película en la base de datos.
+- `ont:runtime`: Duración de la película.
+- `ont:release_date`: Fecha de estreno de la película.
+- `ont:title`: Título de la película.
+- `ont:vote_average`: Puntaje promedio de reseñas de la película.
+- `ont:retorno`: Retorno financiero de la película.
+- `ont:status`: Estado de la película.
+- `ont:revenue`: Recaudación total de la película.
+- `ont:popularity`: Puntaje de popularidad de la película.
+- `ont:release_year`: Año de estreno de la película.
+- `ont:original_language`: Idioma original de la película.
+
+### Object Properties
+- `ont:contains_Index`: Relaciona el índice que se ha creado en un dataset.
+- `ont:contains_Table`: Relaciona una tabla que se ha creado en un dataset.
+- `ont:has_Dataset`: Relaciona los metadatos de un catálogo de datos con el dataset que describe.
+- `ont:has_field`: Relaciona una tabla o índice con sus campos `Field`.
+- `ont:partOf_DataCatalog`: Relaciona los metadatos de un dataset o base de datos con un catálogo de datos.
+- `ont:partOf_Database`: Relaciona un dataset con la base de datos en la que reside.
+- `ont:partOf_Dataset`: Relaciona una tabla o índice con el dataset del que forma parte. Este es el inverso de `contains_Table`.
+- `ont:stores`: Relaciona una base de datos con un dataset creado en ella.
+- `ont:has_producer`: Relaciona una película con la productora que la realizó.
+- `ont:has_genre`: Relaciona una película con su género.
+- `ont:has_franchise`: Relaciona una película con la franquicia a la que pertenece.
+- `ont:has_review`: Relaciona una película con las reseñas `Review` que ha recibido.
+### Individuals
+- `ont:MoviesData`: Instancia de `Dataset`. Representa un dataset con información sobre películas.
+  - `ont:partOf_DataCatalog`: Pertenece al catálogo de datos `MoviesDataCatalog`.
+  - `ont:partOf_Database`: Está almacenado en la base de datos `PostgreSQL`.
+  - `ont:description`: "Dataset con información sobre películas".
+
+- `ont:PostgreSQL`: Instancia de `Database`. Representa una base de datos de tipo relacional usando PostgreSQL.
+  - `ont:partOf_DataCatalog`: Pertenece al catálogo de datos `MoviesDataCatalog`.
+  - `ont:stores`: Almacena el dataset `MoviesData`.
+  - `ont:creationDate`: "2024-10-20T00:00:00" (Fecha de creación de la base de datos).
+  - `ont:databaseEngine`: "Relacional. PostgreSQL" (Tipo de motor de base de datos).
+  - `ont:description`: "Base de datos de PostgreSQL".
+
+- `ont:MoviesDataCatalog`: Instancia de `DataCatalog`. Es un catálogo de datos relacionado con el dataset de películas.
+  - `ont:has_Dataset`: Incluye el dataset `MoviesData`.
+  - `ont:description`: "Catálogo de datos relacionado con el dataset de películas".
+
+
 
