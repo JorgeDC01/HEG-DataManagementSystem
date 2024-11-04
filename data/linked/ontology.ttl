@@ -1,0 +1,516 @@
+@prefix : <urn:webprotege:ontology:5e61ad5d-2709-4c06-8e18-04fc9181388f#> .
+@prefix dc: <https://www.dublincore.org/specifications/dublin-core/usageguide/2005-11-07/elements/> .
+@prefix ont: <http://upm.es/ontology/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <urn:webprotege:ontology:5e61ad5d-2709-4c06-8e18-04fc9181388f> .
+
+<urn:webprotege:ontology:5e61ad5d-2709-4c06-8e18-04fc9181388f> rdf:type owl:Ontology .
+
+#################################################################
+#    Annotation properties
+#################################################################
+
+###  http://purl.org/dc/elements/1.1/creator
+<http://purl.org/dc/elements/1.1/creator> rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/elements/1.1/description
+<http://purl.org/dc/elements/1.1/description> rdf:type owl:AnnotationProperty .
+
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://upm.es/ontology/contains_Index
+ont:contains_Index rdf:type owl:ObjectProperty ;
+                rdfs:domain ont:Dataset ;
+                rdfs:range ont:Index ;
+                <http://purl.org/dc/elements/1.1/description> "Relaciona el índice que se ha creado en un dataset"^^xsd:string ;
+                rdfs:label "ont:contains_Index"@en-gb .
+
+
+###  http://upm.es/ontology/contains_Table
+ont:contains_Table rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf owl:topObjectProperty ;
+                rdfs:domain ont:Dataset ;
+                rdfs:range ont:Table ;
+                <http://purl.org/dc/elements/1.1/description> "Relaciona una tabla que se ha creado en un dataset"^^xsd:string ;
+                rdfs:label "ont:contains_Table"@en-gb .
+
+
+###  http://upm.es/ontology/has_Dataset
+ont:has_Dataset rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf owl:topObjectProperty ;
+                rdfs:domain ont:DataCatalog ;
+                rdfs:range ont:Dataset ;
+                <http://purl.org/dc/elements/1.1/description> "Relaciona los metadatos de un dataset con el dataset"^^xsd:string ;
+                rdfs:label "ont:has_Dataset"@en-gb .
+
+
+###  http://upm.es/ontology/has_field
+ont:has_field rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf owl:topObjectProperty ;
+                rdfs:domain ont:Index ,
+                                ont:Table ;
+                rdfs:range ont:Field ;
+                <http://purl.org/dc/elements/1.1/description> "Relaciona una Table o Index con sus Field."^^xsd:string ;
+                rdfs:label "ont:has_field"@en-gb .
+
+
+###  http://upm.es/ontology/partOf_DataCatalog
+ont:partOf_DataCatalog rdf:type owl:ObjectProperty ;
+                rdfs:domain ont:Dataset ,
+                                ont:Database ;
+                rdfs:range ont:DataCatalog ;
+                <http://purl.org/dc/elements/1.1/description> "Relaciona los metadatos de un dataset o database"^^xsd:string ;
+                rdfs:label "ont:partOf_DataCatalog"@en-gb .
+
+
+###  http://upm.es/ontology/partOf_Database
+ont:partOf_Database rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf owl:topObjectProperty ;
+                rdfs:domain ont:Dataset ;
+                rdfs:range ont:Database ;
+                <http://purl.org/dc/elements/1.1/description> "Relaciona un Dataset con la Database en la que reside."^^xsd:string ;
+                rdfs:label "ont:partOf_Database"@en-gb .
+
+
+###  http://upm.es/ontology/partOf_Dataset
+ont:partOf_Dataset rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf owl:topObjectProperty ;
+                rdfs:domain ont:Index ,
+                        ont:Table ;
+                rdfs:range ont:Dataset ;
+                <http://purl.org/dc/elements/1.1/description> "Relaciona una Table o Índice con el Dataset del que forma parte. Este es el inverso de containsTable."^^xsd:string ;
+                rdfs:label "ont:partOf_Dataset"@en-gb .
+
+
+###  http://upm.es/ontology/stores
+ont:stores rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf owl:topObjectProperty ;
+                rdfs:domain ont:Database ;
+                rdfs:range ont:Dataset ;
+                <http://purl.org/dc/elements/1.1/description> "Relaciona una base de datos con un dataset creado en ella"^^xsd:string ;
+                rdfs:label "ont:stores"@en-gb .
+
+
+###  http://upm.es/ontology/has_producer
+ont:has_producer rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf owl:topObjectProperty ;
+                rdfs:domain <http://upm.es/ontology/Movie> ;
+                rdfs:range <http://upm.es/ontology/ProductionCompany> ;
+                rdfs:label "ont:has_producer"@en-gb .
+
+
+###  http://upm.es/ontology/has_genre
+ont:has_genre rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf owl:topObjectProperty ;
+                rdfs:domain <http://upm.es/ontology/Movie> ;
+                rdfs:range <http://upm.es/ontology/Genre> ;
+                rdfs:label "ont:has_genre"@en-gb .
+
+
+###  http://upm.es/ontology/has_franquise
+ont:has_franchise rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf owl:topObjectProperty ;
+                rdfs:domain <http://upm.es/ontology/Movie> ;
+                rdfs:range <http://upm.es/ontology/Franchise> ;
+                rdfs:label "ont:has_franchise"@en-gb .
+
+
+###  http://upm.es/ontology/has_review
+ont:has_review rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf owl:topObjectProperty ;
+                rdfs:domain <http://upm.es/ontology/Movie> ;
+                rdfs:range <http://upm.es/ontology/Review> ;
+                rdfs:label "ont:has_review"@en-gb .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://upm.es/ontology/count
+ont:count rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain ont:Dataset ,
+                        ont:Table ;
+                rdfs:range xsd:int ;
+                <http://purl.org/dc/elements/1.1/description> "Cuantifica el número de tablas, índices creados en un dataset o el número de registros"^^xsd:string ;
+                rdfs:label "ont:count"@en-gb .
+
+
+###  http://upm.es/ontology/creationDate
+ont:creationDate rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain ont:Database ,
+                        ont:DataCatalog ;
+                rdfs:range xsd:dateTime ;
+                <http://purl.org/dc/elements/1.1/description> "Fecha de creacion de los metadatos"^^xsd:string ;
+                rdfs:label "ont:creationDate"@en-gb .
+
+
+###  http://upm.es/ontology/databaseEngine
+ont:databaseEngine rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain ont:Database ;
+                rdfs:range xsd:string ;
+                <http://purl.org/dc/elements/1.1/description> "Describe el tipo de base de datos: relacional, noSQL (documental, clave-valor, etc)"^^xsd:string ;
+                rdfs:label "ont:databaseEngine"@en-gb .
+
+
+###  http://upm.es/ontology/databaseSize
+ont:databaseSize rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain ont:Dataset ,
+                        ont:Database ;
+                rdfs:range xsd:int ;
+                <http://purl.org/dc/elements/1.1/description> "Describe el tamaño en GB de la base de datos o de un dataset en concreto"^^xsd:string ;
+                rdfs:label "ont:databaseSize"@en-gb .
+
+
+###  http://upm.es/ontology/datatype
+ont:datatype rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain ont:Field ;
+                rdfs:range xsd:string ;
+                <http://purl.org/dc/elements/1.1/description> "Describe el tipo de dato que almacena un campo de una tabla o índice"^^xsd:string ;
+                rdfs:label "ont:datatype"@en-gb .
+
+
+###  http://upm.es/ontology/description
+ont:description rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain ont:Dataset ,
+                            ont:Database ,
+                            ont:Field ,
+                            ont:Index ,
+                            ont:Table ,
+                            ont:DataCatalog ;
+                rdfs:range xsd:string ;
+                rdfs:label "ont:description"@en-gb .
+
+
+###  http://upm.es/ontology/endpoint_db
+ont:endpoint_db rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain ont:Database ;
+                rdfs:range xsd:string ;
+                rdfs:comment "Punto de acceso de la base de datos"^^xsd:string ;
+                rdfs:label "ont:endpoint_db"@en-gb .
+
+
+###  http://upm.es/ontology/isIndexed
+ont:isIndexed rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain ont:Field ;
+                rdfs:range xsd:boolean ;
+                <http://purl.org/dc/elements/1.1/description> "Describe si un campo está indexado. En tal caso, se pueden realizar consultas más rápidas"^^xsd:string ;
+                rdfs:label "ont:isIndexed"@en-gb .
+
+
+###  http://upm.es/ontology/isRequired
+ont:isRequired rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain ont:Field ;
+                rdfs:range xsd:boolean ;
+                <http://purl.org/dc/elements/1.1/description> "Describe si un campo puede tomar valores nulos"^^xsd:string ;
+                rdfs:label "ont:isRequired"@en-gb .
+
+
+###  http://upm.es/ontology/last_Update
+ont:last_Update rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain ont:Dataset ,
+                            ont:Index ,
+                            ont:Table ;
+                rdfs:range xsd:dateTime ;
+                rdfs:comment "Ultima modificacion del dataset"^^xsd:string ;
+                rdfs:label "ont:last_Update"@en-gb .
+
+
+###  http://upm.es/ontology/name
+ont:name rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain ont:Dataset ,
+                        ont:Database ,
+                        ont:Field ,
+                        ont:Index ,
+                        ont:Table ,
+                        ont:DataCatalog ;
+                rdfs:range xsd:string ;
+                rdfs:label "ont:name"@en-gb .
+
+
+###  http://upm.es/ontology/version_db
+ont:version_db rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain ont:Database ;
+                rdfs:range xsd:string ;
+                rdfs:comment "Versión de la base de datos empleada"^^xsd:string ;
+                rdfs:label "ont:version_db"@en-gb .
+
+
+###  http://upm.es/ontology/vote_count
+ont:vote_count rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain <http://upm.es/ontology/Movie> ;
+                rdfs:range xsd:int ;
+                rdfs:comment "Número de votos recibidos de la película TMDB."^^xsd:string ;
+                rdfs:label "ont:vote_count"@en-gb .
+
+
+###  http://upm.es/ontology/spoken_languages
+ont:spoken_languages rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:label "ont:spoken_languages"@en-gb .
+
+
+###  http://upm.es/ontology/budget
+ont:budget rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain <http://upm.es/ontology/Movie> ;
+                rdfs:range xsd:int ;
+                rdfs:comment "Presupuesto de la película."^^xsd:string ;
+                rdfs:label "ont:budget"@en-gb .
+
+
+###  http://upm.es/ontology/overview
+ont:overview rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain <http://upm.es/ontology/Movie> ;
+                rdfs:range xsd:string ;
+                rdfs:comment "Resumen de la película."^^xsd:string ;
+                rdfs:label "ont:overview"@en-gb .
+
+
+###  http://upm.es/ontology/review_text
+ont:review_text rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain <http://upm.es/ontology/Review> ;
+                rdfs:range xsd:string ;
+                rdfs:comment "Texto de la reseña."^^xsd:string ;
+                rdfs:label "ont:review_text"@en-gb .
+
+
+###  http://upm.es/ontology/movieId
+ont:movieId rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain <http://upm.es/ontology/Movie> ;
+                rdfs:range xsd:int ;
+                rdfs:comment "ID de la película en la base de datos."^^xsd:string ;
+                rdfs:label "ont:movieId"@en-gb .
+
+
+###  http://upm.es/ontology/runtime
+ont:runtime rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain <http://upm.es/ontology/Movie> ;
+                rdfs:range xsd:int ;
+                rdfs:comment "Duración"^^xsd:string ;
+                rdfs:label "ont:runtime"@en-gb .
+
+
+###  http://upm.es/ontology/release_date
+ont:release_date rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain <http://upm.es/ontology/Movie> ;
+                rdfs:range xsd:dateTime ;
+                rdfs:comment "Fecha de estreno."^^xsd:string ;
+                rdfs:label "ont:release_date"@en-gb .
+
+
+###  http://upm.es/ontology/title
+ont:title rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain <http://upm.es/ontology/Movie> ;
+                rdfs:range xsd:string ;
+                rdfs:comment "Título de la película."^^xsd:string ;
+                rdfs:label "ont:title"@en-gb .
+
+
+###  http://upm.es/ontology/vote_average
+ont:vote_average rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain <http://upm.es/ontology/Movie> ;
+                rdfs:range xsd:float ;
+                rdfs:comment "Puntaje promedio de reseñas."^^xsd:string ;
+                rdfs:label "ont:vote_average"@en-gb .
+
+
+###  http://upm.es/ontology/retorno
+ont:retorno rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain <http://upm.es/ontology/Movie> ;
+                rdfs:range xsd:float ;
+                rdfs:comment "Retorno de la película."^^xsd:string ;
+                rdfs:label "ont:retorno"@en-gb .
+
+
+###  http://upm.es/ontology/status
+ont:status rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain <http://upm.es/ontology/Movie> ;
+                rdfs:range xsd:string ;
+                rdfs:comment "Estado de la película."^^xsd:string ;
+                rdfs:label "ont:status"@en-gb .
+
+
+###  http://upm.es/ontology/revenue
+ont:revenue rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain <http://upm.es/ontology/Movie> ;
+                rdfs:range xsd:int ;
+                rdfs:comment "Recaudación de la película."^^xsd:string ;
+                rdfs:label "ont:revenue"@en-gb .
+
+
+###  http://upm.es/ontology/popularity
+ont:popularity rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain <http://upm.es/ontology/Movie> ;
+                rdfs:range xsd:int ;
+                rdfs:comment "Puntaje de popularidad."^^xsd:string ;
+                rdfs:label "ont:popularity"@en-gb .
+
+
+###  http://upm.es/ontology/release_year
+ont:release_year rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain <http://upm.es/ontology/Movie> ;
+                rdfs:range xsd:int ;
+                rdfs:comment "Año de estreno de la película."^^xsd:string ;
+                rdfs:label "ont:release_year"@en-gb .
+
+
+###  http://upm.es/ontology/original_language
+ont:original_language rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain <http://upm.es/ontology/Movie> ;
+                rdfs:range xsd:string ;
+                rdfs:comment "Idioma original de la película."^^xsd:string ;
+                rdfs:label "ont:original_language"^^xsd:string .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://rdfs.org/ns/ont#Dataset
+ont:Dataset rdf:type owl:Class ;
+                <http://purl.org/dc/elements/1.1/creator> "Miguel González"^^xsd:string ;
+                <http://purl.org/dc/elements/1.1/description> "Representa los conjuntos de datos 'datasets'."^^xsd:string ;
+                rdfs:label "ont:Dataset"@en-gb .
+
+
+###  http://upm.es/ontology#Database
+ont:Database rdf:type owl:Class ;
+                <http://purl.org/dc/elements/1.1/creator> "Rosa López"^^xsd:string ;
+                <http://purl.org/dc/elements/1.1/description> "Representa la fuente de los datos. Puede incluir bases de datos relacionales (como PostgreSQL) o sistemas de búsqueda (como Elasticsearch)."^^xsd:string ;
+                rdfs:label "ont:Database"@en-gb .
+
+
+###  http://upm.es/ontology#Field
+ont:Field rdf:type owl:Class ;
+                <http://purl.org/dc/elements/1.1/creator> "Rosa López"^^xsd:string ;
+                <http://purl.org/dc/elements/1.1/description> "Representa columnas o campos específicos en cada tabla o índice."^^xsd:string ;
+                rdfs:label "ont:Field"@en-gb .
+
+
+###  http://upm.es/ontology#Index
+ont:Index rdf:type owl:Class ;
+                <http://purl.org/dc/elements/1.1/creator> "Jorge del Castillo"^^xsd:string ;
+                <http://purl.org/dc/elements/1.1/description> "Clase índice, representa los índices que se crean en las bases de datos"^^xsd:string ;
+                rdfs:label "ont:Index"@en-gb .
+
+
+###  http://upm.es/ontology#Table
+ont:Table rdf:type owl:Class ;
+                <http://purl.org/dc/elements/1.1/creator> "Jorge del Castillo"^^xsd:string ;
+                <http://purl.org/dc/elements/1.1/description> "Representa cada tabla en una base de datos relacional."^^xsd:string ;
+                rdfs:label "ont:Table"@en-gb .
+
+
+###  http://upm.es/ontology#Genre
+ont:Genre rdf:type owl:Class ;
+                <http://purl.org/dc/elements/1.1/creator> "Fernando Fernández"^^xsd:string ;
+                <http://purl.org/dc/elements/1.1/description> "Representa el género de una película, string"^^xsd:string ;
+                rdfs:label "ont:Genre"@en-gb .
+
+
+###  http://upm.es/ontology#Review
+ont:Review rdf:type owl:Class ;
+                <http://purl.org/dc/elements/1.1/creator> "Fernando Fernández"^^xsd:string ;
+                <http://purl.org/dc/elements/1.1/description> "Representa la entidad Review del dataset no estructurado"^^xsd:string ;
+                rdfs:label "ont:Review"@en-gb .
+
+
+###  http://upm.es/ontology#ProductionCompany
+ont:ProductionCompany rdf:type owl:Class ;
+                <http://purl.org/dc/elements/1.1/creator> "Rosa López"^^xsd:string ;
+                <http://purl.org/dc/elements/1.1/description> "Representa la productora de la película"^^xsd:string ;
+                rdfs:label "ont:ProductionCompany"@en-gb .
+
+
+###  http://upm.es/ontology#Franchise
+ont:Franchise rdf:type owl:Class ;
+                <http://purl.org/dc/elements/1.1/creator> "Fernando Fernández"^^xsd:string ;
+                <http://purl.org/dc/elements/1.1/description> "Representa la franquicia a la que pertenece una película"^^xsd:string ;
+                rdfs:label "ont:Franchise"@en-gb .
+
+
+###  http://upm.es/ontology#Movie
+ont:Movie rdf:type owl:Class ;
+                <http://purl.org/dc/elements/1.1/creator> "Miguel González"^^xsd:string ;
+                <http://purl.org/dc/elements/1.1/description> "Representa la entidad Película del dataset estructurado"^^xsd:string ;
+                rdfs:label "ont:Movie"@en-gb .
+
+
+###  http://www.w3.org/ns/ont#DataCatalog
+ont:DataCatalog rdf:type owl:Class ;
+                 <http://purl.org/dc/elements/1.1/creator> "Jorge del Castillo"^^xsd:string ;
+                 <http://purl.org/dc/elements/1.1/description> "Descripción de los metadatos según la entidad que describa"^^xsd:string ;
+                 rdfs:label "ont:DataCatalog"@en-gb .
+
+
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  http://upm.es/ontology#MoviesData
+ont:MoviesData rdf:type owl:NamedIndividual ,
+                        ont:Dataset ;   
+                ont:partOf_DataCatalog ont:MoviesDataCatalog ;
+                ont:partOf_Database ont:PostgreSQL ;
+                ont:description "Dataset con informacion sobre peliculas"^^xsd:string ;
+                rdfs:label "MoviesData"@en-gb .
+
+
+###  http://upm.es/ontology#PostgreSQL
+ont:PostgreSQL rdf:type owl:NamedIndividual ,
+                        ont:Database ;
+                ont:partOf_DataCatalog ont:MoviesDataCatalog ;
+                ont:stores ont:MoviesData ;
+                ont:creationDate "2024-10-20T00:00:00"^^xsd:dateTime ;
+                ont:databaseEngine "Relacional. PostgreSQL"^^xsd:string ;
+                ont:description "Base de datos de PostgreSQL"^^xsd:string ;
+                rdfs:label "PostgreSQL"@en-gb .
+
+
+###  http://upm.es/ontology#MoviesDataCatalog
+ont:MoviesDataCatalog rdf:type owl:NamedIndividual ,
+                        ont:DataCatalog ;
+                ont:has_Dataset ont:MoviesData;
+                ont:description "Catalogo de datos relacionado con el dataset de peliculas"^^xsd:string ;
+                rdfs:label "MoviesDataCatalog"@en-gb .
+
+
+
+###  Generated by the OWL API (version 4.5.13) https://github.com/owlcs/owlapi
