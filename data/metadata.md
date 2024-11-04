@@ -97,7 +97,7 @@ Cada ".csv" almacena un conjunto de películas con diferentes atributos (name, y
 
 ![image](https://github.com/user-attachments/assets/a5631176-9997-4a74-b969-c7313b3ccea9)
 
-Nuestro dataset no estructurado se obtiene a partir de la técnica de ***webscraping*** sobre estas páginas web. Se extraen 42407 reseñas de películas en total. Estas reseñas se insertan en ElasticSearch. 
+Nuestro dataset no estructurado se obtiene a partir de la técnica de ***webscraping*** sobre estas páginas web. Se extraen 28693 reseñas de películas en total. Estas reseñas se insertan en ElasticSearch. 
 
 ElasticSearch es un motor de búsqueda y análisis que permite almacenar, buscar y analizar grandes volúmenes de datos. Además, puede utilizarse como una base de datos NoSQL orientada a documentos, aunque no es un SGBD completo como lo pueden ser PostgreSQL o MySQL porque no ofrece el mismo nivel de consistencia de los datos.
 
@@ -105,13 +105,39 @@ ElasticSearch es un motor de búsqueda y análisis que permite almacenar, buscar
 Un ejemplo de documento extraido del dataset de reviews es el siguiente:
 
 ```
-{'_index': 'reviews',
- '_id': 1,
- '_source': {'Unnamed: 0': 1,
-  'review_text': 'this movie is a work of art the finest sequel ever made i dont think we will see another movie like
-  this for a long time heath ledgers joker is the best movie charachter i have ever seen by far avengers endgame is
-  great but the dark knight is much better the best batman ever the best joker ever the best dc movie ever the best
-  superhero movie ever ando for me the best movie ever'}}
+{
+  '_index': 'reviews',
+  '_id': 'tt0114369',
+  '_source': {
+    'name': 'Se7en',
+    'review': It is a rarity for a film to be completely unsettling and yet unrelentingly gripping.
+    David Fincher's story takes place in a bleak and constantly raining city, never named, 
+    where urban decay and sleaze in all forms are rampant. Coming up to his retirement from 
+    the police force is Detective Lieutenant Somerset (Morgan Freeman), who is tasked with 
+    breaking in his replacement, Detective Sergeant Mills (Brad Pitt), before leaving. 
+    Somerset is world-weary...
+  }
+}
 ```
 
 El propósito de almacenar las reseñas de películas junto con el nombre de la película es relacionar el conjunto de datos estructurado en PostgreSQL con el conjunto no estructurado de reseñas, de modo que ambas bases de datos se ejecuten en dos contenedores diferentes dentro de una misma red en Docker. De esta forma, se pueden realizar consultas de texto sobre un conjunto de películas o sobre una en específico.
+
+
+# Datos Enlazados - Metadatos
+## Fuente de los Datos
+- **Origen:** 
+- **URLs de origen:**
+  - 
+  
+## Fecha de Recogida
+- **Fecha:** 
+
+## Formato de los Datos
+- **Formato:**
+  
+## Licencia de Uso
+- **Licencia:** 
+- **Enlace a la licencia:** 
+
+## Descripción del conjunto de datos
+
