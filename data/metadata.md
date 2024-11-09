@@ -6,7 +6,7 @@ Este proyecto utiliza dos fuentes de datos estructurados de películas para crea
 
 1. Primer Dataset - Películas con Puntuación: La primera fuente de datos proviene de un repositorio en GitHub, que contiene información básica de películas, incluyendo sus puntuaciones. Este archivo se encuentra en formato ".csv" y se carga en una base de datos de PostgreSQL para facilitar su almacenamiento y consulta.
 
-2. Segundo Dataset - Películas con Información Extendida de Rotten Tomatoes: La segunda fuente de datos es un archivo en formato ".csv" que proviene de Rotten Tomatoes y contiene información adicional sobre cada película, incluyendo campos como directores, actores, guionistas, restricciones de edad (rating_content), entre otros. Este archivo se mantiene en su formato original de almacenamiento ".csv".
+2. Segundo Dataset - Películas con Información Extendida de Rotten Tomatoes: La segunda fuente de datos es un archivo en formato ".csv" que proviene de Rotten Tomatoes y contiene información adicional sobre cada película, incluyendo campos como directores, actores, guionistas, restricciones de edad (rating_content), puntuación en rotten tomatoes, entre otros. Este archivo se mantiene en su formato original de almacenamiento ".csv".
 
 La combinación de ambos datasets permite enriquecer la información de las películas al realizar un JOIN entre el dataset básico de GitHub (con puntuación) y el dataset extendido de Rotten Tomatoes. Este proceso facilita que cada película en el conjunto final tenga no solo su puntuación, sino también detalles adicionales como sus directores, autores, actores, restricción de edad, etc.
 
