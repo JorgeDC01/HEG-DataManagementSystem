@@ -2,26 +2,31 @@
 
 # Datos estructurados - Películas
 
-**Explicación**: Se escogen dos fuentes de datos estructurados de películas. La primera fuente de datos se obtiene de un repositorio de Github con formato ".csv". Este conjunto de películas se almacenará en una base de datos de PostgreSQL. La segunda fuente de películas se obtiene a partir del dataset de puntuaciones de películas en formato ".csv" de *rotten tomatoes*. Este nuevo conjunto de películas se mantendrá en el formato de almacenamiento ".csv".
+Este proyecto utiliza dos fuentes de datos estructurados de películas para crear un conjunto de datos enriquecido y consolidado. Los datos se obtienen de la siguiente manera:
 
-La idea principal de utilizar ambos conjuntos de películas es realizar un JOIN entre el dataset de películas disponible en GitHub y el dataset de puntuaciones de películas de Rotten Tomatoes. Esto permitirá que cada película tenga asociada su puntuación en Rotten Tomatoes. Para realizar este JOIN, se emplea Apache Hive como intermediario entre el archivo .csv y la base de datos en PostgreSQL.
+1. Primer Dataset - Películas con Puntuación: La primera fuente de datos proviene de un repositorio en GitHub, que contiene información básica de películas, incluyendo sus puntuaciones. Este archivo se encuentra en formato ".csv" y se carga en una base de datos de PostgreSQL para facilitar su almacenamiento y consulta.
 
-Apache Hive es una infraestructura de almacenamiento de datos distribuida, construida sobre Hadoop, que funciona como un **data warehouse** y permite gestionar y analizar grandes volúmenes de datos procedentes de diversas fuentes. Hive proporciona un lenguaje de consulta similar a SQL, lo cual facilita el acceso, la combinación y la transformación de distintos conjuntos de datos de forma eficiente. Esto posibilita una integración efectiva de los datos de ambos datasets, consolidando la información de películas y sus puntuaciones en una sola fuente.
+2. Segundo Dataset - Películas con Información Extendida de Rotten Tomatoes: La segunda fuente de datos es un archivo en formato ".csv" que proviene de Rotten Tomatoes y contiene información adicional sobre cada película, incluyendo campos como directores, actores, guionistas, restricciones de edad (rating_content), entre otros. Este archivo se mantiene en su formato original de almacenamiento ".csv".
 
+La combinación de ambos datasets permite enriquecer la información de las películas al realizar un JOIN entre el dataset básico de GitHub (con puntuación) y el dataset extendido de Rotten Tomatoes. Este proceso facilita que cada película en el conjunto final tenga no solo su puntuación, sino también detalles adicionales como sus directores, autores, actores, restricción de edad, etc.
+
+Para realizar el JOIN, se emplea Apache Hive como intermediario entre el archivo .csv y la base de datos PostgreSQL. Apache Hive es una infraestructura distribuida sobre Hadoop que actúa como un data warehouse, permitiendo gestionar y analizar grandes volúmenes de datos de forma eficiente. Su lenguaje de consulta similar a SQL facilita el acceso, la combinación y la transformación de datos provenientes de distintas fuentes, consolidando así la información de ambos datasets en una única fuente unificada.
+
+Esta integración de datos a través de Hive permite analizar y explorar información detallada sobre las películas, abstrayendose de las distintas formas de almacenamiento internas.
 
 ## Fuente de los Datos
 - **Origen: Repositorio en Github y Kaggle** 
 - **URLs de origen:**
-  - [Movies](https://github.com/melodiromero/movies/blob/main/dataset/movies_limpio.csv)
-  - [Puntuaciones](https://www.kaggle.com/datasets/stefanoleone992/rotten-tomatoes-movies-and-critic-reviews-dataset)
+  - [Movies con puntuaciones](https://github.com/melodiromero/movies/blob/main/dataset/movies_limpio.csv)
+  - [Movies de Rotten Tomatoes](https://www.kaggle.com/datasets/stefanoleone992/rotten-tomatoes-movies-and-critic-reviews-dataset)
   
 ## Fecha de Recogida
 - **Fecha:** 27-10-2024 / 6-11-2024
 
 ## Formato de los Datos
 - **Formatos:**
-  - Películas: CSV. Almacenamiento en PostgreSQL
-  - Puntuaciones: CSV. Almacenamiento en formato ".csv"
+  - Movies con puntuaciones: CSV. Almacenamiento en PostgreSQL
+  - Movies-Rotten: CSV. Almacenamiento en formato ".csv"
   
 ## Licencias de Uso
 - **Películas**
@@ -32,7 +37,7 @@ Apache Hive es una infraestructura de almacenamiento de datos distribuida, const
   - **Licencia:** CC0 1.0 Universal
   - **Enlace a la licencia:** [URL de la licencia](https://creativecommons.org/publicdomain/zero/1.0/)
 
-## Descripción de las variables del conjunto de datos de Películas
+## Descripción de las variables del conjunto de datos de Movies con puntuaciones
 
 | Nombre de la Variable       | Tipo de Dato | Descripción                                                                                         |
 |-----------------------------|--------------|-----------------------------------------------------------------------------------------------------|
@@ -68,7 +73,7 @@ El tipo de dato de la columna "genres" es un diccionario. Una película puede re
 <img src="https://github.com/user-attachments/assets/30cfa78f-72e7-4705-b01f-d80a7e8cfa35" width="500" height="400">
 
 
-## Descripción de las variables del conjunto de datos de Puntuaciones de Películas
+## Descripción de las variables del conjunto de datos de Movies-Rotten
 
 | Nombre de la Variable              | Tipo de Dato | Descripción                                                                                    |
 |------------------------------------|--------------|------------------------------------------------------------------------------------------------|
@@ -122,7 +127,7 @@ La infraestructura de Hive ha sido configurada usando contenedores en Docker par
 
 Red de Docker (gestbd_net): Todos los contenedores están conectados en la red gestbd_net, lo cual permite una comunicación interna y segura entre los servicios.
 
-Para implementar el **data warehouse**, se crean dos tablas en Hive mediante consultas SQL y estárán enlazadas con la tabla de películas de PostgreSQL y el archivo ".csv". Las consultas SQL para la creación de las tablas "movies_linked" y "scoring_movies" son las siguientes:
+Para implementar el **data warehouse**, se crean dos tablas en Hive mediante consultas SQL y estárán enlazadas con la tabla de películas de PostgreSQL y el archivo ".csv". Las consultas SQL para la creación de las tablas "movies_linked" y "rotten_movies" son las siguientes:
 
 ```sql
 CREATE EXTERNAL TABLE movies_linked (
@@ -150,7 +155,7 @@ TBLPROPERTIES (
   "hive.sql.table" = "movies"
 );
 
-CREATE EXTERNAL TABLE scoring_movies (
+CREATE EXTERNAL TABLE rotten_movies (
   rotten_tomatoes_link STRING,
   movie_title STRING,
   movie_info STRING, 
@@ -177,9 +182,9 @@ CREATE EXTERNAL TABLE scoring_movies (
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
-LOCATION '/opt/hive/data/warehouse/scoring_movies';
+LOCATION '/opt/hive/data/warehouse/rotten_movies';
 
-LOAD DATA LOCAL INPATH '/opt/hive/data/warehouse/rotten_tomatoes_movies.csv' INTO TABLE scoring_movies;
+LOAD DATA LOCAL INPATH '/opt/hive/data/warehouse/rotten_tomatoes_movies.csv' INTO TABLE rotten_movies;
 ```
 
 
