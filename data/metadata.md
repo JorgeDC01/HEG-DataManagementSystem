@@ -1,21 +1,36 @@
 *En la primera release del repositorio, se recuperaron dos datasets de crímenes y arrestos en Los Angeles. Esta primera idea se ha sustituido temporalmente por la recolección de películas y reviews, facilitando la creación de una relación entre los datos estructurados (películas) y los no estructurados (reviews).*
 
 # Datos estructurados - Películas
+
+**Explicación**: Se escogen dos fuentes de datos estructurados de películas. La primera fuente de datos se obtiene de un repositorio de Github con formato ".csv". Este conjunto de películas se almacenará en una base de datos de PostgreSQL. La segunda fuente de películas se obtiene a partir del dataset de puntuaciones de películas en formato ".csv" de *rotten tomatoes*. Este nuevo conjunto de películas se mantendrá en el formato de almacenamiento ".csv".
+
+La idea principal de utilizar ambos conjuntos de películas es realizar un JOIN entre el dataset de películas disponible en GitHub y el dataset de puntuaciones de películas de Rotten Tomatoes. Esto permitirá que cada película tenga asociada su puntuación en Rotten Tomatoes. Para realizar este JOIN, se emplea Apache Hive como intermediario entre el archivo .csv y la base de datos en PostgreSQL.
+
+Apache Hive es una infraestructura de almacenamiento de datos distribuida, construida sobre Hadoop, que funciona como un **data warehouse** y permite gestionar y analizar grandes volúmenes de datos procedentes de diversas fuentes. Hive proporciona un lenguaje de consulta similar a SQL, lo cual facilita el acceso, la combinación y la transformación de distintos conjuntos de datos de forma eficiente. Esto posibilita una integración efectiva de los datos de ambos datasets, consolidando la información de películas y sus puntuaciones en una sola fuente.
+
+
 ## Fuente de los Datos
-- **Origen: Repositorio en Github** 
+- **Origen: Repositorio en Github y Kaggle** 
 - **URLs de origen:**
   - [Movies](https://github.com/melodiromero/movies/blob/main/dataset/movies_limpio.csv)
+  - [Puntuaciones](https://www.kaggle.com/datasets/stefanoleone992/rotten-tomatoes-movies-and-critic-reviews-dataset)
   
 ## Fecha de Recogida
-- **Fecha:** 27-10-2024
+- **Fecha:** 27-10-2024 / 6-11-2024
 
 ## Formato de los Datos
-- **Formato:**
-  - CSV
+- **Formatos:**
+  - Películas: CSV. Almacenamiento en PostgreSQL
+  - Puntuaciones: CSV. Almacenamiento en formato ".csv"
   
-## Licencia de Uso
-- **Licencia:** [Licencia de Datos](https://help.imdb.com/article/imdb/general-information/content-licensing/GZGA5HDQ8NE97LVR?ref_=helpart_nav_45#)
-- **Enlace a la licencia:** [URL de la licencia](https://help.imdb.com/article/imdb/general-information/content-licensing/GZGA5HDQ8NE97LVR?ref_=helpart_nav_45#)
+## Licencias de Uso
+- **Películas**
+  - **Licencia:** [Licencia de Datos](https://help.imdb.com/article/imdb/general-information/content-licensing/GZGA5HDQ8NE97LVR?ref_=helpart_nav_45#)
+  - **Enlace a la licencia:** [URL de la licencia](https://help.imdb.com/article/imdb/general-information/content-licensing/GZGA5HDQ8NE97LVR?ref_=helpart_nav_45#)
+
+- **Puntuaciones**
+  - **Licencia:** CC0 1.0 Universal
+  - **Enlace a la licencia:** [URL de la licencia](https://creativecommons.org/publicdomain/zero/1.0/)
 
 ## Descripción de las variables del conjunto de datos de Películas
 
@@ -52,6 +67,123 @@ El tipo de dato de la columna "genres" es un diccionario. Una película puede re
 
 <img src="https://github.com/user-attachments/assets/30cfa78f-72e7-4705-b01f-d80a7e8cfa35" width="500" height="400">
 
+
+## Descripción de las variables del conjunto de datos de Puntuaciones de Películas
+
+| Nombre de la Variable              | Tipo de Dato | Descripción                                                                                    |
+|------------------------------------|--------------|------------------------------------------------------------------------------------------------|
+| rotten_tomatoes_link               | object       | Enlace único a la película en Rotten Tomatoes.                                                 |
+| movie_title                        | object       | Título de la película.                                                                         |
+| movie_info                         | object       | Información adicional sobre la película.                                                       |
+| critics_consensus                  | object       | Opinión general de los críticos sobre la película.                                             |
+| content_rating                     | object       | Clasificación de contenido de la película (ej., PG, R).                                        |
+| genres                             | object       | Géneros a los que pertenece la película.                                                       |
+| directors                          | object       | Director(es) de la película.                                                                   |
+| authors                            | object       | Autor(es) o guionista(s) de la película.                                                       |
+| actors                             | object       | Actor(es) principales de la película.                                                          |
+| original_release_date              | object       | Fecha de estreno original de la película.                                                      |
+| streaming_release_date             | object       | Fecha de estreno en plataformas de streaming.                                                  |
+| runtime                            | float64      | Duración de la película en minutos.                                                            |
+| production_company                 | object       | Compañía de producción de la película.                                                         |
+| tomatometer_status                 | object       | Estado en el Tomatometer (ej., Fresh, Rotten).                                                 |
+| tomatometer_rating                 | float64      | Calificación en el Tomatometer (0-100).                                                        |
+| tomatometer_count                  | int64        | Número de críticas evaluadas en el Tomatometer.                                                |
+| audience_status                    | object       | Estado de la audiencia (ej., Upright, Spilled).                                                |
+| audience_rating                    | float64      | Calificación de la audiencia (0-100).                                                          |
+| audience_count                     | int64        | Número de reseñas de la audiencia evaluadas.                                                   |
+| tomatometer_top_critics_count      | int64        | Número de críticas realizadas por los principales críticos en el Tomatometer.                  |
+| tomatometer_fresh_critics_count    | int64        | Número de críticas positivas en el Tomatometer.                                                |
+| tomatometer_rotten_critics_count   | int64        | Número de críticas negativas en el Tomatometer.                                                |
+
+Los datos han sido almacenados en su formato origen ".csv". 
+
+## Data Warehouse. Apache Hive
+
+La infraestructura de Hive ha sido configurada usando contenedores en Docker para gestionar un metastore distribuido con PostgreSQL como base de datos de respaldo.
+
+1. PostgreSQL (hive4-postgres): Se emplea como la base de datos principal del metastore de Hive, donde se almacenan los metadatos de las tablas y bases de datos creadas en Hive. Este servicio tiene la siguiente configuración:
+
+- Se establece el nombre de la base de datos metastore_db, con el usuario hive y la contraseña password.
+- Expone el puerto 5432 para permitir conexiones al metastore de Hive.
+- **Almacenamiento persistente** mediante el volumen hive-db, asegurando que los datos persisten entre reinicios.
+
+2. Metastore de Hive (metastore): Este servicio se conecta a la base de datos PostgreSQL para almacenar y recuperar metadatos, configurado para integrarse con PostgreSQL como sistema de gestión de metadatos. Su configuración incluye:
+
+- Variables de entorno para especificar el controlador de la base de datos (postgres) y los detalles de conexión (URL, usuario y contraseña).
+- Uso de los controladores JDBC de PostgreSQL, montados en /opt/hive/lib/, para permitir la conectividad.
+- Exposición del puerto 9083, utilizado para la comunicación entre servicios.
+
+3. HiveServer2 (hiveserver2): Proporciona la interfaz para ejecutar consultas en Hive utilizando el protocolo Thrift. Este servicio se conecta al metastore para consultar y gestionar los datos, configurado con:
+
+- El puerto 10000 para consultas Thrift y 10002 para JDBC/ODBC.
+- Variables de entorno que apuntan al servicio de metastore, permitiendo la conexión para la ejecución de consultas en Hive.
+
+4. Hue (hue): Interfaz web que permite a los usuarios interactuar de manera sencilla con Hive y su metastore. Hue está configurado para conectarse a - HiveServer2 en el puerto 10000 para ejecutar consultas SQL desde su entorno web.
+
+Red de Docker (gestbd_net): Todos los contenedores están conectados en la red gestbd_net, lo cual permite una comunicación interna y segura entre los servicios.
+
+Para implementar el **data warehouse**, se crean dos tablas en Hive mediante consultas SQL y estárán enlazadas con la tabla de películas de PostgreSQL y el archivo ".csv". Las consultas SQL para la creación de las tablas "movies_linked" y "scoring_movies" son las siguientes:
+
+```sql
+CREATE EXTERNAL TABLE movies_linked (
+    movie_id INT,
+    budget FLOAT,
+    original_language STRING,
+    overview STRING,
+    popularity FLOAT,
+    release_date DATE,
+    revenue FLOAT,
+    runtime FLOAT,
+    title STRING,
+    vote_average FLOAT,
+    vote_count INT,
+    release_year INT,
+    retorno FLOAT
+)
+STORED BY 'org.apache.hive.storage.jdbc.JdbcStorageHandler'
+TBLPROPERTIES (
+  "hive.sql.database.type" = "POSTGRES",
+  "hive.sql.jdbc.driver" = "org.postgresql.Driver",
+  "hive.sql.jdbc.url" = "jdbc:postgresql://hive4-postgres:5432/postgres",
+  "hive.sql.dbcp.username" = "hive",
+  "hive.sql.dbcp.password" = "password",
+  "hive.sql.table" = "movies"
+);
+
+CREATE EXTERNAL TABLE scoring_movies (
+  rotten_tomatoes_link STRING,
+  movie_title STRING,
+  movie_info STRING, 
+  critics_consensus INT,
+  content_rating STRING,
+  genres STRING,
+  directors INT,
+  authors INT,
+  actors INT,
+  original_release_date STRING,
+  streaming_release_date STRING,
+  runtime INT,
+  production_company INT,
+  tomatometer_status INT,
+  tomatometer_rating INT,
+  tomatometer_count INT,
+  audience_status INT,
+  audience_rating INT,
+  audience_count INT,
+  tomatometer_top_critics_count INT,
+  tomatometer_fresh_critics_count INT,
+  tomatometer_rotten_critics_count INT
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION '/opt/hive/data/warehouse/scoring_movies';
+
+LOAD DATA LOCAL INPATH '/opt/hive/data/warehouse/rotten_tomatoes_movies.csv' INTO TABLE scoring_movies;
+```
+
+
+---
 
 # Datos no estructurados - Reviews
 ## Fuente de los Datos
