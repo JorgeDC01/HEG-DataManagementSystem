@@ -1,0 +1,391 @@
+@prefix : <urn:webprotege:ontology:5e61ad5d-2709-4c06-8e18-04fc9181388f#> .
+@prefix dc: <https://www.dublincore.org/specifications/dublin-core/usageguide/2005-11-07/elements/> .
+@prefix ont: <http://upm.es/ontology/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@base <urn:webprotege:ontology:5e61ad5d-2709-4c06-8e18-04fc9181388f> .
+
+<urn:webprotege:ontology:5e61ad5d-2709-4c06-8e18-04fc9181388f> rdf:type owl:Ontology .
+
+#################################################################
+#    Annotation properties
+#################################################################
+
+###  http://purl.org/dc/elements/1.1/creator
+<http://purl.org/dc/elements/1.1/creator> rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/elements/1.1/description
+<http://purl.org/dc/elements/1.1/description> rdf:type owl:AnnotationProperty .
+
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://upm.es/ontology/has_DataSource
+ont:has_DataSource rdf:type owl:ObjectProperty ;
+                   rdfs:domain ont:DataCatalog ,
+                               ont:DataWarehouse ,
+                               ont:Dataset ;
+                   rdfs:range ont:DataSource ;
+                   <http://purl.org/dc/elements/1.1/description> "Relaciona las fuentes de datos de un datacatalog"^^xsd:string ;
+                   rdfs:label "ont:has_DataSource"@en-gb .
+
+
+###  http://upm.es/ontology/has_Dataset
+ont:has_Dataset rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf owl:topObjectProperty ;
+                rdfs:domain ont:DataCatalog ;
+                rdfs:range ont:Dataset ;
+                <http://purl.org/dc/elements/1.1/description> "Relaciona el datacatalog con el conjunto de datasets definidos"^^xsd:string ;
+                rdfs:label "ont:has_Dataset"@en-gb .
+
+
+###  http://upm.es/ontology/has_Table
+ont:has_Table rdf:type owl:ObjectProperty ;
+              rdfs:subPropertyOf owl:topObjectProperty ;
+              rdfs:domain ont:RelationalDB ;
+              rdfs:range ont:Table ;
+              <http://purl.org/dc/elements/1.1/description> "Relaciona una base relacional con las tablas creadas en la misma"^^xsd:string ;
+              rdfs:label "ont:has_Table"@en-gb .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://upm.es/ontology/creationDate
+ont:creationDate rdf:type owl:DatatypeProperty ;
+                 rdfs:subPropertyOf owl:topDataProperty ;
+                 rdfs:domain ont:DataCatalog ,
+                             ont:DataSource ,
+                             ont:Dataset ,
+                             ont:Table ;
+                 rdfs:range xsd:dateTime ;
+                 <http://purl.org/dc/elements/1.1/description> "Fecha de creacion de los metadatos"^^xsd:string ;
+                 rdfs:label "ont:creationDate"@en-gb .
+
+
+###  http://upm.es/ontology/creator
+ont:creator rdf:type owl:DatatypeProperty ;
+            rdfs:subPropertyOf owl:topDataProperty ;
+            rdfs:domain ont:Database ,
+                        ont:Dataset ;
+            rdfs:range xsd:string ;
+            <http://purl.org/dc/elements/1.1/description> "Describe quien ha creado el recurso"^^xsd:string ;
+            rdfs:label "ont:creator"@en-gb .
+
+
+###  http://upm.es/ontology/dataFormat
+ont:dataFormat rdf:type owl:DatatypeProperty ;
+               rdfs:subPropertyOf owl:topDataProperty ;
+               rdfs:domain ont:File ;
+               rdfs:range xsd:string ;
+               <http://purl.org/dc/elements/1.1/description> "Describe el formato de los datos almacenados en un File"^^xsd:string ;
+               rdfs:label "ont:dataFormat"@en-gb .
+
+
+###  http://upm.es/ontology/dataQuality
+ont:dataQuality rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain ont:Database ,
+                            ont:Dataset ;
+                rdfs:range xsd:string ;
+                <http://purl.org/dc/elements/1.1/description> "Describe el nivel o estado de la calidad de los datos (high, medium, low) para la gobernanza de datos y confianza de los datos"^^xsd:string ;
+                rdfs:label "ont:dataQuality"@en-gb .
+
+
+###  http://upm.es/ontology/databaseEngine
+ont:databaseEngine rdf:type owl:DatatypeProperty ;
+                   rdfs:subPropertyOf owl:topDataProperty ;
+                   rdfs:domain ont:Database ;
+                   rdfs:range xsd:string ;
+                   <http://purl.org/dc/elements/1.1/description> "Describe el tipo de base de datos"^^xsd:string ;
+                   rdfs:label "ont:databaseEngine"@en-gb .
+
+
+###  http://upm.es/ontology/databaseSize
+ont:databaseSize rdf:type owl:DatatypeProperty ;
+                 rdfs:subPropertyOf owl:topDataProperty ;
+                 rdfs:domain ont:Database ;
+                 rdfs:range xsd:int ;
+                 <http://purl.org/dc/elements/1.1/description> "Describe el tamaño en GB de la base de datos o de un dataset en concreto"^^xsd:string ;
+                 rdfs:label "ont:databaseSize"@en-gb .
+
+
+###  http://upm.es/ontology/description
+ont:description rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain ont:DataCatalog ,
+                            ont:DataSource ,
+                            ont:Dataset ,
+                            ont:Table ;
+                rdfs:range xsd:string ;
+                rdfs:label "ont:description"@en-gb .
+
+
+###  http://upm.es/ontology/endpoint
+ont:endpoint rdf:type owl:DatatypeProperty ;
+             rdfs:subPropertyOf owl:topDataProperty ;
+             rdfs:domain ont:DataSource ;
+             rdfs:range xsd:string ;
+             <http://purl.org/dc/elements/1.1/description> "Endpoint de las fuentes de datos"^^xsd:string ;
+             rdfs:label "ont:endpoint"@en-gb .
+
+
+###  http://upm.es/ontology/last_Update
+ont:last_Update rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain ont:DataSource ,
+                            ont:Dataset ,
+                            ont:Table ;
+                rdfs:range xsd:dateTime ;
+                rdfs:comment "Ultima modificacion de la entidad asociada"^^xsd:string ;
+                rdfs:label "ont:last_Update"@en-gb .
+
+
+###  http://upm.es/ontology/name
+ont:name rdf:type owl:DatatypeProperty ;
+         rdfs:subPropertyOf owl:topDataProperty ;
+         rdfs:domain ont:DataCatalog ,
+                     ont:DataSource ,
+                     ont:Dataset ,
+                     ont:Table ;
+         rdfs:range xsd:string ;
+         <http://purl.org/dc/elements/1.1/description> "Nombre identificativo de la entidad"^^xsd:string ;
+         rdfs:label "ont:name"@en-gb .
+
+
+###  http://upm.es/ontology/version
+ont:version rdf:type owl:DatatypeProperty ;
+            rdfs:subPropertyOf owl:topDataProperty ;
+            rdfs:domain ont:Database ,
+                        ont:Dataset ,
+                        ont:File ;
+            rdfs:range xsd:float ;
+            rdfs:comment "Versión de la base de datos empleada"^^xsd:string ;
+            rdfs:label "ont:version"@en-gb .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://upm.es/ontology/DataCatalog
+ont:DataCatalog rdf:type owl:Class ;
+                <http://purl.org/dc/elements/1.1/creator> "Jorge del Castillo"^^xsd:string ;
+                <http://purl.org/dc/elements/1.1/description> "Descripción del catalogo de datos de la infraestructura"^^xsd:string ;
+                rdfs:label "ont:DataCatalog"@en-gb .
+
+
+###  http://upm.es/ontology/DataSource
+ont:DataSource rdf:type owl:Class ;
+               <http://purl.org/dc/elements/1.1/creator> "Fernando Férnandez"^^xsd:string ;
+               <http://purl.org/dc/elements/1.1/description> "Representa una Fuente de Datos, puede ser un data warehouse, fichero o base de datos"^^xsd:string ;
+               rdfs:label "ont:DataSource"@en-gb .
+
+
+###  http://upm.es/ontology/DataWarehouse
+ont:DataWarehouse rdf:type owl:Class ;
+                  rdfs:subClassOf ont:DataSource ;
+                  <http://purl.org/dc/elements/1.1/creator> "Jorge del Castillo"^^xsd:string ;
+                  <http://purl.org/dc/elements/1.1/description> "Representa un datawarehouse que gestiona varias fuentes de datos"^^xsd:string ;
+                  rdfs:label "ont:DataWarehouse"@en-gb .
+
+
+###  http://upm.es/ontology/Database
+ont:Database rdf:type owl:Class ;
+             rdfs:subClassOf ont:DataSource ;
+             <http://purl.org/dc/elements/1.1/creator> "Rosa López"^^xsd:string ;
+             <http://purl.org/dc/elements/1.1/description> "Representa una base de datos. Puede incluir bases de datos relacionales (como PostgreSQL) o no relacionales (ElasticSearch, MongoDB, etc)"^^xsd:string ;
+             rdfs:label "ont:Database"@en-gb .
+
+
+###  http://upm.es/ontology/Dataset
+ont:Dataset rdf:type owl:Class ;
+            <http://purl.org/dc/elements/1.1/creator> "Miguel González"^^xsd:string ;
+            <http://purl.org/dc/elements/1.1/description> "Representa un conjunto de datos definido en la infraestructura"^^xsd:string ;
+            rdfs:label "ont:Dataset"@en-gb .
+
+
+###  http://upm.es/ontology/File
+ont:File rdf:type owl:Class ;
+         rdfs:subClassOf ont:DataSource ;
+         <http://purl.org/dc/elements/1.1/creator> "Rosa López"^^xsd:string ;
+         <http://purl.org/dc/elements/1.1/description> "Representa un tipo concreto de fuente de datos, un archivo"^^xsd:string ;
+         rdfs:label "ont:File"@en-gb .
+
+
+###  http://upm.es/ontology/NoRelationalDB
+ont:NoRelationalDB rdf:type owl:Class ;
+                   rdfs:subClassOf ont:Database ;
+                   <http://purl.org/dc/elements/1.1/creator> "Miguel Gonzalez"^^xsd:string ;
+                   <http://purl.org/dc/elements/1.1/description> "Representa una base de datos de tipo no relacional"^^xsd:string ;
+                   rdfs:label "ont:NoRelationalDB"@en-gb .
+
+
+###  http://upm.es/ontology/RelationalDB
+ont:RelationalDB rdf:type owl:Class ;
+                 rdfs:subClassOf ont:Database ;
+                 <http://purl.org/dc/elements/1.1/creator> "Fernando Fernandez"^^xsd:string ;
+                 <http://purl.org/dc/elements/1.1/description> "Representa una base de datos de tipo relacional"^^xsd:string ;
+                 rdfs:label "ont:RelationalDB"@en-gb .
+
+
+###  http://upm.es/ontology/Table
+ont:Table rdf:type owl:Class ;
+          <http://purl.org/dc/elements/1.1/creator> "Jorge del Castillo"^^xsd:string ;
+          <http://purl.org/dc/elements/1.1/description> "Representa una tabla en una base de datos relacional."^^xsd:string ;
+          rdfs:label "ont:Table"@en-gb .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  http://upm.es/ontology#MovieGenresTabla
+ont:MovieGenresTabla rdf:type owl:NamedIndividual ,
+                                ont:Table ;
+                                ont:creationDate "2024-10-14T12:30:00"^^xsd:dateTime ;
+                                ont:creator "Fernando Fernandez"^^xsd:string ;
+                                ont:description "Describe la relacion externa muchos-muchos que existe entre las peliculas y los generos"^^xsd:string ;
+                                ont:version 1.0 ;
+                                <http://purl.org/dc/elements/1.1/description> "Tabla que relaciona las peliculas y los generos mediante sus identificadores"^^xsd:string ;
+                                rdfs:label "MovieGenresTabla"@en-gb .
+
+
+###  http://upm.es/ontology#GenresTabla
+ont:GenresTabla rdf:type owl:NamedIndividual ,
+                            ont:Table ;
+                            ont:creationDate "2024-10-14T12:00:00"^^xsd:dateTime ;
+                            ont:creator "Rosa Lopez"^^xsd:string ;
+                            ont:description "Tabla que describe los generos de las peliculas. Relaciona los strings de generos con sus identificadores"^^xsd:string ;
+                            ont:version 1.0 ;
+                            <http://purl.org/dc/elements/1.1/description> "Tabla que representa los generos de las peliculas"^^xsd:string ;
+                            rdfs:label "GenresTabla"@en-gb .
+
+
+###  http://upm.es/ontology#MoviesDatacatalog
+ont:MoviesDatacatalog rdf:type owl:NamedIndividual ,
+                                ont:DataCatalog ;
+                                ont:has_DataSource ont:PostgreSQL ,
+                                                ont:Hive ,
+                                                ont:MoviesCSV ,
+                                                ont:ElasticSearch ;
+                                ont:has_Dataset ont:MoviesDataset ,
+                                                ont:ReviewsDataset ;
+                                ont:creationDate "2024-11-13T16:00:00"^^xsd:dateTime ;
+                                ont:creator "Jorge del Castillo"^^xsd:string ;
+                                ont:description "Catalogo de datos relacionado con las fuentes de datos relacionadas con películas"^^xsd:string ;
+                                <http://purl.org/dc/elements/1.1/description> "Datacatalog para las peliculas"^^xsd:string ;
+                                rdfs:label "MoviesDatacatalog"@en-gb .
+
+
+###  http://upm.es/ontology#PostgreSQL
+ont:PostgreSQL rdf:type owl:NamedIndividual ,
+                                ont:RelationalDB ;
+                        ont:has_Table ont:MovieGenresTabla ,
+                                    ont:GenresTabla ,
+                                    ont:MovieTabla ;
+                        ont:creationDate "2024-10-20T12:00:00"^^xsd:dateTime ;
+                        ont:creator "Rosa Lopez"^^xsd:string ;
+                        ont:databaseEngine "Postgre es una base relacional que permite realizar consultas complejas de manera eficiente. Si nuestros datos escalan, y tenemos datos de directores, autores, productoras, franquicias, premios, compositores, etc, PostgreSQL permite realizar consultas complejas con JOINs"^^xsd:string ;
+                        ont:databaseSize 0.2 ;
+                        ont:description "Base de datos de PostgreSQL que almacena datos estructurados"^^xsd:string ;
+                        ont:endpoint "http://localhost:5432"^^xsd:string ;
+                        ont:last_Update "2024-10-24T12:00:00"^^xsd:dateTime ;
+                        ont:version 17.0 ;
+                        <http://purl.org/dc/elements/1.1/description> "Base de datos de Postgre que almacena parte de los datos estructurados de peliculas"^^xsd:string ;
+                        rdfs:label "PostgreSQL"@en-gb .
+
+
+###  http://upm.es/ontology#MoviesDataset
+ont:MoviesDataset rdf:type owl:NamedIndividual ,
+                                ont:Dataset ;
+                        ont:has_DataSource ont:PostgreSQL ,
+                                           ont:Hive ,
+                                           ont:MoviesCSV ;
+                        ont:creationDate "2024-10-17T12:00:00"^^xsd:dateTime ;
+                        ont:creator "Miguel Gonzalez"^^xsd:string ;
+                        ont:dataQuality "high"^^xsd:string ;
+                        ont:description "Es un dataset de peliculas con una fuente de datos multiple de imdb y rotten tomatoes"^^xsd:string ;
+                        ont:last_Update "2024-10-20T12:00:00"^^xsd:dateTime ;
+                        ont:version 2.0 ;
+                        <http://purl.org/dc/elements/1.1/description> "Dataset de peliculas"^^xsd:string ;
+                        rdfs:label "MoviesDataset"@en-gb .
+
+
+###  http://upm.es/ontology#Hive
+ont:Hive rdf:type owl:NamedIndividual ,
+                                ont:DataWarehouse ;
+                        ont:has_DataSource ont:PostgreSQL ,
+                                           ont:MoviesCSV ;
+                        ont:creationDate "2024-10-20T16:20:00"^^xsd:dateTime ;
+                        ont:creator "Miguel Gonzalez"^^xsd:string ;
+                        ont:description "Infraestructura de Hive que contiene un data warehouse de distintas fuentes de datos"^^xsd:string ;
+                        ont:endpoint "hive://hiveserver2:10000/default"^^xsd:string ;
+                        <http://purl.org/dc/elements/1.1/description> "Infraestructura Hive que implementa un datawarehouse con peliculas"^^xsd:string ;
+                        rdfs:label "Hive"@en-gb .
+
+
+###  http://upm.es/ontology#MoviesCSV
+ont:MoviesCSV rdf:type owl:NamedIndividual ,
+                                ont:File ;
+                        ont:creationDate "2024-10-10T12:00:00"^^xsd:dateTime ;
+                        ont:creator "Jorge del Castillo"^^xsd:string ;
+                        ont:dataFormat "CSV"^^xsd:string ;
+                        ont:description "Archivo CSV que contiene un conjunto de peliculas en formato tabular"^^xsd:string ;
+                        ont:last_Update "2024-10-10T12:00:00"^^xsd:dateTime ;
+                        ont:version 1.0 ;
+                        <http://purl.org/dc/elements/1.1/description> "Fuente de datos de tipo fichero csv que contiene peliculas en formato tabular"^^xsd:string ;
+                        rdfs:label "MoviesCSV"@en-gb .
+
+
+###  http://upm.es/ontology#ReviewsDataset
+ont:ReviewsDataset rdf:type owl:NamedIndividual ,
+                                ont:Dataset ;
+                        ont:has_DataSource ont:ElasticSearch ;
+                        ont:creator "Jorge del Castillo"^^xsd:string ;
+                        ont:dataQuality "high"^^xsd:string ;
+                        ont:description "Describe el dataset de reviews recuperado por webscraping y una consulta sparql"^^xsd:string ;
+                        ont:last_Update "2024-11-13T12:00:00"^^xsd:dateTime ;
+                        ont:version 4.0 ;
+                        <http://purl.org/dc/elements/1.1/description> "Dataset de reseñas"^^xsd:string ;
+                        rdfs:label "ReviewsDataset"@en-gb .
+
+
+###  http://upm.es/ontology#MovieTabla
+ont:MovieTabla rdf:type owl:NamedIndividual ,
+                                ont:Table ;
+                        ont:creationDate "2024-10-14T12:00:00"^^xsd:dateTime ;
+                        ont:creator "Miguel Gonzalez"^^xsd:string ;
+                        ont:description "Describe la tabla que almacena el conjunto de películas en una base de datos relacional."^^xsd:string ;
+                        ont:version 1.1 ;
+                        <http://purl.org/dc/elements/1.1/description> "Tabla que describe las peliculas del conjunto de datos estructurados"^^xsd:string ;
+                        rdfs:label "MovieTabla"@en-gb .
+
+
+###  http://upm.es/ontology#ElasticSearch
+ont:ElasticSearch rdf:type owl:NamedIndividual ,
+                                ont:NoRelationalDB ;
+                        ont:creationDate "2024-10-27T12:00:00"^^xsd:dateTime ;
+                        ont:creator "Fernando Fernandez"^^xsd:string ;
+                        ont:databaseEngine """Es fundamental para indexar y buscar grandes cantidades de texto, como reseñas. En un futuro, si se amplía la infraestructura, ElasticSearch se puede integrar con Hadoop para realizar consultas de manera más eficiente.
+
+Es extremadamente rápido en búsquedas de texto."""^^xsd:string ;
+                        ont:databaseSize 0.5 ;
+                        ont:description "Base de datos no relacional, motor de busqueda que indexa texto mediante indices inversos"^^xsd:string ;
+                        ont:endpoint "http://localhost:9200"^^xsd:string ;
+                        ont:last_Update "2024-11-13T12:00:00"^^xsd:dateTime ;
+                        ont:version 7.17 ;
+                        <http://purl.org/dc/elements/1.1/description> "Base de datos no relacional, motor de busqueda ElasticSearch para la busqueda de reseñas"^^xsd:string ;
+                        rdfs:label "ElasticSearch"@en-gb .
+
+
+###  Generated by the OWL API (version 4.5.13) https://github.com/owlcs/owlapi
