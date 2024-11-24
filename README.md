@@ -1,3 +1,10 @@
+**Contribuidores**:
+- Jorge del Castillo Gómez
+- Miguel Gonzalez García
+- Rosa López Escalona
+- Fernando Fernández Álvarez
+
+---
 # Introducción
 
 Este proyecto integra un **Data Warehouse** desarrollado en **Apache Hive**, un **Data Lake** implementado con **ElasticSearch** y **Hadoop**, y una ontología que describe la infraestructura mediante **datos enlazados** en **GraphDB**. La ontología aprovecha el concepto de **Data Space** para facilitar consultas cruzadas entre diversos conjuntos de datos distribuidos en Internet.
