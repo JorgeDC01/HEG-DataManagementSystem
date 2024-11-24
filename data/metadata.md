@@ -1,6 +1,23 @@
-*En la primera release del repositorio, se recuperaron dos datasets de crímenes y arrestos en Los Angeles. Esta primera idea se ha sustituido temporalmente por la recolección de películas y reviews, facilitando la creación de una relación entre los datos estructurados (películas) y los no estructurados (reviews).*
+# Introducción
 
-# Datos estructurados - Películas
+Este proyecto integra un **Data Warehouse** desarrollado en **Apache Hive**, un **Data Lake** implementado con **ElasticSearch** y **Hadoop**, y una ontología que describe la infraestructura mediante **datos enlazados** en **GraphDB**. La ontología aprovecha el concepto de **Data Space** para facilitar consultas cruzadas entre diversos conjuntos de datos distribuidos en Internet.
+
+El objetivo principal de este proyecto es realizar un **análisis de las reseñas de películas con el fin de identificar las palabras que puedan distinguir entre los grupos de películas, organizados en cuartiles según su puntuación media.**
+
+El proyecto se desarrolla en 3 fases:
+
+1. **Datos estructurados**. Implementación de un data warehouse con Apache Hive + PostgreSQL
+2. **Datos no estructurados**. Implementación de un data lake con ElasticSearch + Hadoop
+3. **Datos enlazados**. Diseño de una ontología descriptiva de la infraestructura empleada con GraphDB
+
+> El notebook _./main/main.ipynb_ detalla el _pipeline_ creado para la consecución del proyecto.
+
+## Infraestructura
+
+<img src="https://github.com/user-attachments/assets/00a1c782-7edf-4fcc-8b7f-0fa30fbe97ae" width="800" height="400">
+
+
+# Datos estructurados - Películas de dos fuentes de datos distintas
 
 Este proyecto utiliza dos fuentes de datos estructurados de películas para crear un conjunto de datos enriquecido y consolidado. Los datos se obtienen de la siguiente manera:
 
@@ -72,7 +89,6 @@ El tipo de dato de la columna "genres" es un diccionario. Una película puede re
 
 <img src="https://github.com/user-attachments/assets/30cfa78f-72e7-4705-b01f-d80a7e8cfa35" width="500" height="400">
 
-
 ## Descripción de las variables del conjunto de datos de Movies-Rotten
 
 | Nombre de la Variable              | Tipo de Dato | Descripción                                                                                    |
@@ -102,7 +118,7 @@ El tipo de dato de la columna "genres" es un diccionario. Una película puede re
 
 Los datos han sido almacenados en su formato origen ".csv". 
 
-## Data Warehouse. Apache Hive
+## :star: Data Warehouse. Apache Hive
 
 La infraestructura de Hive ha sido configurada usando contenedores en Docker para gestionar un metastore distribuido con PostgreSQL como base de datos de respaldo.
 
@@ -191,6 +207,14 @@ LOAD DATA LOCAL INPATH '/opt/hive/data/warehouse/rotten_tomatoes_movies.csv' INT
 ---
 
 # Datos no estructurados - Reviews
+
+El objetivo del proyecto es recuperar reseñas de películas almacenadas en el Data Warehouse.
+
+Como parte de una práctica inicial, en el directorio _./data/unstructured_ se descarga un dataset de Kaggle que contiene enlaces a reseñas de películas de IMDb. Sobre estos enlaces, se aplica un proceso de web scraping para extraer un total de 48,000 reseñas de películas. Estas reseñas son almacenadas en una base de datos NoSQL y documental: **ElasticSearch**.
+
+Aunque ElasticSearch no es una base de datos tradicional, sino un motor de búsqueda distribuido basado en texto, se utiliza en este proyecto debido a su capacidad para manejar grandes volúmenes de datos no estructurados y realizar búsquedas rápidas y eficientes sobre contenido textual. Su uso permite optimizar la consulta y recuperación de reseñas, lo que facilita el análisis de las mismas en fases posteriores del proyecto.
+
+
 ## Fuente de los Datos
 - **Origen: Kaggle. Movie-reviews** 
 - **URLs de origen:**
@@ -260,9 +284,66 @@ Un ejemplo de documento extraido del dataset de reviews es el siguiente:
 El propósito de almacenar las reseñas de películas junto con el nombre de la película es relacionar el conjunto de datos estructurado en PostgreSQL con el conjunto no estructurado de reseñas, de modo que ambas bases de datos se ejecuten en dos contenedores diferentes dentro de una misma red en Docker. De esta forma, se pueden realizar consultas de texto sobre un conjunto de películas o sobre una en específico.
 
 
-# Datos Enlazados - Metadatos
+## :star: Data lake. ElasticSearch - Hadoop
+
+En el notebook ./main/main.ipynb, la extracción de las reseñas se lleva a cabo de manera diferente en comparación con el proceso seguido en el directorio ./unstructured. Desde el Data Warehouse, se realiza una consulta para obtener los títulos de las películas, en total, 14,000. Con estos títulos, se realiza una consulta al endpoint de la ontología de Wikidata para obtener datos relacionados con cada película. En concreto, se busca obtener el identificador de cada película en IMDb para generar el enlace que nos permitirá acceder a las reseñas de esa película. Para ello, se ejecuta una consulta SPARQL sobre el endpoint: https://query.wikidata.org/sparql.
+
+La consulta SPARQL ejecutada tiene la siguiente forma:
+
+```
+SELECT ?item ?itemLabel ?imdb_id
+WHERE {{
+  VALUES ?title {{ {titles_str} }}
+  ?item rdfs:label ?title.
+  ?item wdt:P31 wd:Q11424.  # La entidad debe ser una película
+  ?item wdt:P345 ?imdb_id.  # ID de IMDb
+  SERVICE wikibase:label {{ bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }}
+}}
+```
+En total, se obtienen los identificadores de IMDb de 11,906 películas. Con estos identificadores, se forman las URLs: https://www.imdb.com/title/{imdb_id}/reviews/_ajax y se realiza web scraping para recuperar un total de 217,000 reseñas, las cuales se almacenarán en una infraestructura de ElasticSearch-Hadoop, formando un Data Lake.
+
+La principal ventaja de usar Spark con ElasticSearch es su capacidad para procesar grandes volúmenes de datos de forma distribuida y escalable. Aunque no se ha configurado un clúster de Spark con ElasticSearch en el entorno actual (que se ejecuta en una sola máquina), en un sistema distribuido esta integración sería clave para acelerar los procesos de preprocesamiento y consultas.
+
+A continuación, se inicia el proceso de inserción de las reseñas en ElasticSearch. Un documento de reseña contiene los siguientes campos:
+
+- imdb_id: identificador de la película en IMDb.
+- movie_title: título de la película.
+- quartile_vc: cuartil de la puntuación media al que pertenece la reseña.
+- quartile_rotten_rating: cuartil de la puntuación de Rotten Tomatoes al que pertenece la reseña.
+- review: contenido de la reseña.
+
+Un ejemplo de reseña almacenada en el índice reviews_extracted de ElasticSearch es el siguiente:
+
+```
+{'_index': 'reviews_extracted',
+ '_id': 1,
+ '_source': {'imdb_id': 'tt0112715',
+  'movie_title': 'Congo',
+  'quartile_vc': 'Q1',
+  'quartile_rotten_rating': 'Q1',
+  'review': 'ok movie best watched rainy day youre pretty bored fake looking gorillas obviously wellmade
+ whereas 1993 film jurassic park familiarized audiences cg dinosaurs fact cgi originally planned grays
+ technology yet developed point realistic hair could created smooth skinned dinosaurs possible hairy apes
+ would looked inappropriately cartooned therefore animatronics masks puppetry utilized kind damper special
+ effects well tim currys bad acting movie could lot better viewable got gorilla puppets tim currys accent pretty
+ decent movie thought story good jurassic park michael crichton congo wasnt realistic neither jurassic park like
+ show legends hidden temple intelligent gorillas science action plot could sit watch ill give barely 6 stars'}}
+```
+Cada reseña está asociada a un cuartil. Como se describió al comienzo, la idea es extraer los tópicos más relevantes de cada cuartil, utilizando dos distribuciones de películas clasificadas según dos tipos de puntuaciones. Esto nos permitirá identificar coincidencias entre los tópicos de los cuartiles o determinar si algunos son discriminantes específicos para cada rango de puntuación.
+
+
+# Datos Enlazados - Ontología descriptiva de la infraestructura - GraphDB
+Los datos enlazados tienen una amplia variedad de aplicaciones. Se puede diseñar una ontología que describa nuestros datos y establezca vínculos entre las clases de la ontología y otras ontologías del Data Space mediante equivalencias, con el objetivo de conectar infraestructuras de datos distintas y permitir consultas cruzadas.
+
+Por ejemplo, en el dominio de las películas, podríamos realizar una consulta SPARQL a una ontología que contenga información sobre distribuidoras, productoras, actores o localizaciones de ciudades, lo que permitiría relacionar películas con sus localizaciones geográficas. Esto no solo facilita el acceso y la exploración de los datos, sino que también ofrece una capa de interoperabilidad con otras fuentes de datos externas.
+
+En este proyecto, se ha diseñado una ontología que describe nuestra infraestructura de datos, permitiendo el acceso libre a cualquier usuario interesado en hacer uso de los datos almacenados en el Data Warehouse o en el Data Lake. Además, se proporcionan los endpoints correspondientes para facilitar la interacción con nuestra ontología a través de consultas SPARQL. De esta manera, los usuarios pueden explorar nuestra infraestructura y acceder a los datos de manera flexible.
+
+Es importante destacar que este proyecto ha sido ejecutado en un entorno local y no ha sido desplegado en una red pública. Por lo tanto, aunque la ontología y los datos están disponibles para su consulta en el entorno local, no están accesibles en la web pública.
+
+
 ## Fuente de los Datos
-- **Origen:** Estructurado por los miembros del grupo con la herramienta [WebProtégé](https://webprotege.stanford.edu/).
+- **Origen:** Estructurado por los miembros del grupo con la herramienta [WebProtégé](https://webprotege.stanford.edu/). Son las instancias que definen la infraestructura usada.
   
 ## Fecha de Recogida
 - **Fecha:** 03/11/2024
@@ -275,77 +356,27 @@ El propósito de almacenar las reseñas de películas junto con el nombre de la 
 
 ## Descripción del conjunto de datos
 ### Classes
-- `void:Dataset`: Representa los conjuntos de datos 'datasets'.
-- `ont:Database`: Representa la fuente de los datos. Puede incluir bases de datos relacionales (como PostgreSQL) o sistemas de búsqueda (como Elasticsearch).
-- `ont:Field`: Representa columnas o campos específicos en cada tabla o índice.
-- `ont:Index`: Clase índice, representa los índices que se crean en las bases de datos.
-- `ont:Table`: Representa cada tabla en una base de datos relacional.
-- `ont:Genre`: Representa el género de una película, como un string.
-- `ont:Review`: Representa la entidad Review del dataset no estructurado.
-- `ont:ProductionCompany`: Representa la productora de la película.
-- `ont:Franchise`: Representa la franquicia a la que pertenece una película.
-- `ont:Movie`: Representa la entidad Película del dataset estructurado.
-- `dcat:DataCatalog`: Descripción de los metadatos según la entidad que describa.
+- `ont:DataCatalog`: Representa un catálogo de datos, describiendo los metadatos relacionados con diversas entidades de datos. Puede incluir información sobre la organización y clasificación de los datos dentro de un repositorio o sistema, permitiendo a los usuarios comprender qué datos están disponibles y cómo acceder a ellos.
 
-### Data properties
-- `ont:count`: Cuantifica el número de tablas, índices creados en un dataset o el número de registros.
-- `ont:creationDate`: Fecha de creación de los metadatos.
-- `ont:databaseEngine`: Describe el tipo de base de datos: relacional, noSQL (documental, clave-valor, etc).
-- `ont:databaseSize`: Describe el tamaño en GB de la base de datos o de un dataset en concreto.
-- `ont:datatype`: Describe el tipo de dato que almacena un campo de una tabla o índice.
-- `ont:description`: Descripción del dataset, base de datos, campo, índice o tabla.
-- `ont:endpoint_db`: Punto de acceso de la base de datos.
-- `ont:isIndexed`: Describe si un campo está indexado. En tal caso, se pueden realizar consultas más rápidas.
-- `ont:isRequired`: Describe si un campo puede tomar valores nulos.
-- `ont:last_Update`: Última modificación del dataset, índice o tabla.
-- `ont:name`: Nombre del dataset, base de datos, campo, índice, tabla o catálogo de datos.
-- `ont:version_db`: Versión de la base de datos empleada.
-- `ont:vote_count`: Número de votos recibidos de la película en TMDB.
-- `ont:spoken_languages`: Idiomas hablados en la película.
-- `ont:budget`: Presupuesto de la película.
-- `ont:overview`: Resumen de la película.
-- `ont:review_text`: Texto de la reseña.
-- `ont:movieId`: ID de la película en la base de datos.
-- `ont:runtime`: Duración de la película.
-- `ont:release_date`: Fecha de estreno de la película.
-- `ont:title`: Título de la película.
-- `ont:vote_average`: Puntaje promedio de reseñas de la película.
-- `ont:retorno`: Retorno financiero de la película.
-- `ont:status`: Estado de la película.
-- `ont:revenue`: Recaudación total de la película.
-- `ont:popularity`: Puntaje de popularidad de la película.
-- `ont:release_year`: Año de estreno de la película.
-- `ont:original_language`: Idioma original de la película.
+- `ont:DataSource`: Describe el origen de los datos, especificando la fuente desde la cual los datos son obtenidos. Esta entidad puede estar relacionada con bases de datos, archivos, APIs, o cualquier otra fuente de datos estructurados o no estructurados.
 
-### Object Properties
-- `ont:contains_Index`: Relaciona el índice que se ha creado en un dataset.
-- `ont:contains_Table`: Relaciona una tabla que se ha creado en un dataset.
-- `ont:has_Dataset`: Relaciona los metadatos de un catálogo de datos con el dataset que describe.
-- `ont:has_field`: Relaciona una tabla o índice con sus campos `Field`.
-- `ont:partOf_DataCatalog`: Relaciona los metadatos de un dataset o base de datos con un catálogo de datos.
-- `ont:partOf_Database`: Relaciona un dataset con la base de datos en la que reside.
-- `ont:partOf_Dataset`: Relaciona una tabla o índice con el dataset del que forma parte. Este es el inverso de `contains_Table`.
-- `ont:stores`: Relaciona una base de datos con un dataset creado en ella.
-- `ont:has_producer`: Relaciona una película con la productora que la realizó.
-- `ont:has_genre`: Relaciona una película con su género.
-- `ont:has_franchise`: Relaciona una película con la franquicia a la que pertenece.
-- `ont:has_review`: Relaciona una película con las reseñas `Review` que ha recibido.
-### Individuals
-- `ont:MoviesData`: Instancia de `Dataset`. Representa un dataset con información sobre películas.
-  - `ont:partOf_DataCatalog`: Pertenece al catálogo de datos `MoviesDataCatalog`.
-  - `ont:partOf_Database`: Está almacenado en la base de datos `PostgreSQL`.
-  - `ont:description`: "Dataset con información sobre películas".
+- `ont:Datawarehouse`: Hace referencia a un sistema de almacenamiento de datos estructurados, como un almacén de datos o Data Warehouse. En este contexto, describe los metadatos asociados con la infraestructura de almacenamiento, donde los datos consolidados de diversas fuentes se almacenan para análisis y generación de informes.
 
-- `ont:PostgreSQL`: Instancia de `Database`. Representa una base de datos de tipo relacional usando PostgreSQL.
-  - `ont:partOf_DataCatalog`: Pertenece al catálogo de datos `MoviesDataCatalog`.
-  - `ont:stores`: Almacena el dataset `MoviesData`.
-  - `ont:creationDate`: "2024-10-20T00:00:00" (Fecha de creación de la base de datos).
-  - `ont:databaseEngine`: "Relacional. PostgreSQL" (Tipo de motor de base de datos).
-  - `ont:description`: "Base de datos de PostgreSQL".
+- `ont:Dataset`: Representa un conjunto de datos o dataset. Es una colección organizada de datos, que puede incluir múltiples tipos de información estructurada o no estructurada. Los datasets son la unidad básica para el análisis y procesamiento de datos.
 
-- `ont:MoviesDataCatalog`: Instancia de `DataCatalog`. Es un catálogo de datos relacionado con el dataset de películas.
-  - `ont:has_Dataset`: Incluye el dataset `MoviesData`.
-  - `ont:description`: "Catálogo de datos relacionado con el dataset de películas".
+- `ont:Database`: Representa una fuente de datos estructurados. Puede incluir tanto bases de datos relacionales como no relacionales, y sistemas de almacenamiento como ElasticSearch. Describe la infraestructura de almacenamiento que organiza y mantiene los datos de forma que sea accesible para su consulta y procesamiento.
+
+- `ont:RelationalDB`: Describe una base de datos relacional. Esta entidad define los metadatos asociados a sistemas de bases de datos que siguen un modelo de tablas y relaciones entre ellas, como PostgreSQL, MySQL, o SQL Server. Las bases de datos relacionales permiten realizar consultas SQL para gestionar los datos.
+
+- `ont:NoRelationalDB`: Describe una base de datos no relacional (NoSQL). Este tipo de base de datos se utiliza para almacenar datos que no siguen el modelo de tablas relacionales, como bases de datos de documentos (ej., MongoDB), clave-valor (ej., Redis), o de gráficos (ej., Neo4j). Se usa comúnmente en sistemas que requieren escalabilidad y flexibilidad en el manejo de datos no estructurados o semi-estructurados.
+
+- `ont:File`: Representa un archivo que contiene datos. Esta entidad describe los metadatos de un archivo, que puede ser de diferentes tipos (como CSV, JSON, XML, etc.), y puede estar almacenado localmente o en un sistema de almacenamiento distribuido.
+
+- `ont:Table`: Representa una tabla en una base de datos relacional. Cada tabla contiene datos organizados en filas y columnas, donde cada fila es un registro y cada columna representa un atributo de ese registro. Las tablas son los elementos fundamentales de las bases de datos relacionales y se utilizan para organizar la información de manera estructurada.
+
+La imagen siguiente refleja las instancias de la ontología que describe el diseño de la infraestructura.
+
+![image](https://github.com/user-attachments/assets/045e5a99-8bb5-4c95-b6cc-830920544b17)
 
 
 
